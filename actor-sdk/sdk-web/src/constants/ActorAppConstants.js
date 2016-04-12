@@ -38,7 +38,6 @@ export const ActionTypes = keymirror({
   DIALOGS_CHANGED: null,
   DIALOG_INFO_CHANGED: null,
   TYPING_CHANGED: null,
-  MY_PROFILE_CHANGED: null,
   MESSAGES_CHANGED: null,
   CONNECTION_STATE_CHANGED: null,
 
@@ -160,13 +159,20 @@ export const ActionTypes = keymirror({
   PREFERENCES_SESSION_TERMINATE_ALL_SUCCESS: null,
   PREFERENCES_SESSION_TERMINATE_ALL_ERROR: null,
 
-  MY_PROFILE_MODAL_SHOW: null,
-  MY_PROFILE_MODAL_HIDE: null,
-  MY_PROFILE_SAVE_NAME: null,
-  MY_PROFILE_SAVE_NICKNAME: null,
-  MY_PROFILE_EDIT_ABOUT: null,
-  MY_PROFILE_EDIT_ABOUT_SUCCESS: null,
-  MY_PROFILE_EDIT_ABOUT_ERROR: null,
+  // Profile
+
+  PROFILE_SHOW: null,
+  PROFILE_HIDE: null,
+  PROFILE_CHANGED: null,
+  PROFILE_EDIT_NAME: null,
+  PROFILE_EDIT_NAME_SUCCESS: null,
+  PROFILE_EDIT_NAME_ERROR: null,
+  PROFILE_EDIT_NICK: null,
+  PROFILE_EDIT_NICK_SUCCESS: null,
+  PROFILE_EDIT_NICK_ERROR: null,
+  PROFILE_EDIT_ABOUT: null,
+  PROFILE_EDIT_ABOUT_SUCCESS: null,
+  PROFILE_EDIT_ABOUT_ERROR: null,
 
   KICK_USER: null,
   KICK_USER_SUCCESS: null,
@@ -346,6 +352,12 @@ export const LoggerTypes = {
   DEBUG: 'd'
 };
 
+export const ModalTypes = keymirror({
+  PROFILE: null,
+  GROUP_LIST: null,
+  PEOPLE_LIST: null
+});
+
 export const Path = {
   toImages: 'assets/images',
   toEmoji: 'assets/images/emoji'
@@ -374,6 +386,7 @@ export default {
   MessageContentTypes,
   KeyCodes,
   AsyncActionStates,
+  ModalTypes,
   Path,
   endpoints,
   appName,
