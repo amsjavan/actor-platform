@@ -7,12 +7,11 @@ import { isFunction, last, debounce } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import {shouldComponentUpdate} from 'react-addons-pure-render-mixin';
 
-import { getMessageState } from '../../utils/MessageUtils';
 import PeerUtils from '../../utils/PeerUtils';
 
 import Scroller from '../common/Scroller.react';
 
-import DefaultMessageItem from './messages/MessageItem.react';
+import MessageGroup from './MessageGroup.react';
 import DefaultWelcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
 
@@ -43,12 +42,10 @@ class MessagesList extends Component {
     const { dialog } = context.delegate.components;
     if (dialog && dialog.messages) {
       this.components = {
-        MessageItem: isFunction(dialog.messages.message) ? dialog.messages.message : DefaultMessageItem,
         Welcome: isFunction(dialog.messages.welcome) ? dialog.messages.welcome : DefaultWelcome
       };
     } else {
       this.components = {
-        MessageItem: DefaultMessageItem,
         Welcome: DefaultWelcome
       };
     }
@@ -139,12 +136,13 @@ class MessagesList extends Component {
 
   renderMessages() {
     const { uid, peer, messages, overlay, count, selected, receiveDate, readDate } = this.props;
-    const { MessageItem } = this.components;
 
     const result = [];
+
+    let group = [];
     for (let index = messages.length - count; index < messages.length; index++) {
       const overlayItem = overlay[index];
-      if (overlayItem && overlayItem.dateDivider) {
+      if (overlayItem.dateDivider) {
         result.push(
           <div className="date-divider" key={overlayItem.dateDivider}>
             {overlayItem.dateDivider}
@@ -152,19 +150,25 @@ class MessagesList extends Component {
         );
       }
 
-      const message = messages[index];
+      group.push(messages[index]);
 
-      result.push(
-        <MessageItem
-          peer={peer}
-          message={message}
-          state={getMessageState(message, uid, receiveDate, readDate)}
-          isShort={overlayItem.useShort}
-          isSelected={selected.has(message.rid)}
-          onSelect={this.props.onSelect}
-          key={message.sortKey}
-        />
-      );
+      const nextOverlay = overlay[index + 1];
+      if ((!nextOverlay || !nextOverlay.useShort) && group.length) {
+        result.push(
+          <MessageGroup
+            uid={uid}
+            peer={peer}
+            messages={group}
+            selected={selected}
+            readDate={readDate}
+            receiveDate={receiveDate}
+            onSelect={this.props.onSelect}
+            key={group[group.length - 1].sortKey}
+          />
+        );
+
+        group = [];
+      }
     }
 
     return result;
